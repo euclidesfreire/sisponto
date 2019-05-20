@@ -11,6 +11,20 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('login', 'Auth\LoginController@login')->name('login');
+Route::post('login', 'Auth\LoginController@loginAdmin')->name('loginAdmin');
+Route::post('logout', 'Auth\LoginController@logout')->name('logout');
+
+Route::group(['prefix' => 'admin', 'middleware' => ['auth:admin']], function () {
+	Route::get('/', 'Admin\HomeController@index')->name('admin.home');
+});
+
+Route::group(['prefix' => 'gestor', 'middleware' => ['auth:gestor']], function () {
+	Route::get('/', 'Admin\HomeController@index')->name('admin.home');
+});
+
+Route::group(['prefix' => 'user', 'middleware' => ['auth:user']], function () {
+	Route::get('/', 'Admin\HomeController@index')->name('admin.home');
 });
