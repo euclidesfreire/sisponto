@@ -11,10 +11,10 @@
 |
 */
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/', 'HomeController@index')->name('home');
 
-Route::get('login', 'Auth\LoginController@login')->name('login');
-Route::post('login', 'Auth\LoginController@loginAdmin')->name('loginAdmin');
+Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
+Route::post('login', 'Auth\LoginController@authenticate')->name('authenticate');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth:admin']], function () {

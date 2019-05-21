@@ -15,7 +15,7 @@ class Gestor extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'usuario', 'password',
     ];
 
     /**

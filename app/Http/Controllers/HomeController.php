@@ -23,6 +23,10 @@ class HomeController extends Controller
      */
     public function index()
     {
+        // if(!Gate::allows('isAdmin')){
+            
+        // }
+
         return view('home');
     }
 }

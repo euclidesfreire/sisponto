@@ -57,7 +57,7 @@ class Handler extends ExceptionHandler
        
         $guard = array_get($exception->guards(), 0);
 
-        return redirect()->guest(route("{$guard}.login"));
+        return redirect()->guest(route("login"));
     }
 
 }
