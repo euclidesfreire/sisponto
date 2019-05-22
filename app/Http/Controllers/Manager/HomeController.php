@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Gestor;
+namespace App\Http\Controllers\Manager;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -14,7 +14,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:gestor');
+        $this->middleware('auth:manager');
     }
 
     /**
@@ -24,6 +24,6 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('gestor.home');
+        return view('manager.home');
     }
 }

@@ -11,20 +11,23 @@
 |
 */
 
-Route::get('/', 'HomeController@index')->name('home');
 
-Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
-Route::post('login', 'Auth\LoginController@authenticate')->name('authenticate');
+Route::get('/', 'Auth\LoginController@showLoginForm')->name('login');
+Route::post('/', 'Auth\LoginController@authenticate')->name('login');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 
 Route::group(['prefix' => 'admin', 'middleware' => ['auth:admin']], function () {
 	Route::get('/', 'Admin\HomeController@index')->name('admin.home');
+
+	Route::get('login', 'Admin\Auth\LoginController@showLoginForm')->name('admin.login');
+	Route::post('login', 'Admin\Auth\LoginController@authenticate')->name('admin.login');
+	Route::post('logout', 'Admin\Auth\LoginController@logout')->name('admin.logout');
 });
 
-Route::group(['prefix' => 'gestor', 'middleware' => ['auth:gestor']], function () {
-	Route::get('/', 'Admin\HomeController@index')->name('admin.home');
+Route::group(['prefix' => 'manager', 'middleware' => ['auth:manager']], function () {
+	Route::get('/', 'Manager\HomeController@index')->name('maneger.home');
 });
 
 Route::group(['prefix' => 'user', 'middleware' => ['auth:user']], function () {
-	Route::get('/', 'Admin\HomeController@index')->name('admin.home');
+	Route::get('/', 'User\HomeController@index')->name('user.home');
 });

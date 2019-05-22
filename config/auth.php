@@ -41,9 +41,9 @@ return [
             'provider' => 'admins',
         ],
 
-        'gestor' => [
+        'manager' => [
             'driver' => 'session',
-            'provider' => 'gestors',
+            'provider' => 'managers',
         ],
 
         'user' => [
@@ -80,9 +80,9 @@ return [
             'model' => App\Models\Admin::class,
         ],
 
-         'gestors' => [
+         'managers' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Gestor::class,
+            'model' => App\Models\User::class,
         ],
 
          'users' => [

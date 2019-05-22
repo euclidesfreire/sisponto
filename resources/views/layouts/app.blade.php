@@ -51,6 +51,8 @@
                                 </a>
 
                                 <ul class="dropdown-menu">
+                                    <li><a href="{{ route('maneger.home') }}">Manager</a></li>
+                                    <li><a href="{{ route('user.home') }}">User</a></li>
                                     <li>
                                         <a href="{{ route('logout') }}"
                                             onclick="event.preventDefault();

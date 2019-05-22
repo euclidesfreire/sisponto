@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Auth\AuthRoleController as Role;
 use App\Models\User;
 
 class LoginController extends Controller
@@ -38,16 +39,20 @@ class LoginController extends Controller
 
         $credentials = $request->only('usuario', 'password');
 
+        /*
+        | Sobrescrevendo o method attemp, pois o database não
+        | usa o mesmo method de criptografia que o laravel
+        */
         $user = User::where('n_folha', $credentials['usuario'])->where('web_senha', $credentials['password'])->first();
 
         if ($user) {
-            // Authentication passed...
-            auth('user')->loginUsingId($user->id);
+
+            Role::role($user); //Define Auth('role')
 
             return redirect()->intended('/');
         }
 
-        return "ERROR";
+        return redirect()->route('login');
     }
 
     public function logout(Request $request, $guard = null)
