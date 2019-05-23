@@ -15,9 +15,9 @@ class AuthRoleController extends Controller
     	$estrutura = Estrutura::where('id', $user->estrutura_id)->where('pessoa_responsavel_id', $user->id)->first();
 
     	if($estrutura){
-    		return auth('manager')->loginUsingId($user->id);
+    		return auth('manager')->login($user);
      	}
 
-     	return auth('user')->loginUsingId($user->id);
+     	return auth('user')->login($user);
     }
 }
