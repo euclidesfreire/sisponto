@@ -77,10 +77,10 @@ class LoginController extends Controller
         return redirect('/');
     }
 
-    // protected function guard($guard)
-    // {
-    //     return Auth::guard($guard);
-    // }
+    protected function guard($guard)
+    {
+        return Auth::guard($guard);
+    }
 
     protected function checkGuard()
     {

@@ -26,7 +26,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth:admin']], function () 
 
 Route::group(['prefix' => 'manager', 'middleware' => ['auth:manager']], function () {
 	Route::get('/', 'Manager\HomeController@index')->name('maneger.home');
-	Route::get('alterar', 'Manager\HomeController@index')->name('maneger.home');
+	Route::get('alterar', 'Manager\HomeController@index')->name('maneger.alterar');
 });
 
 Route::group(['prefix' => 'user', 'middleware' => ['auth:user']], function () {

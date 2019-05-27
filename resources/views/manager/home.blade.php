@@ -3,7 +3,10 @@
 @section('title', 'SIS Ponto')
 
 @section('content_header')
-    <h1>Dashboard</h1>
+      <div class="col-md-6">
+        <span>Servidor</span>
+        <h4>{{Auth::user()->nome}}</h4>
+    </div>
 @stop
 
 @section('content')
