@@ -24,6 +24,10 @@ class LoginController extends Controller
 
     use AuthenticatesUsers;
 
+    //  public function __construct()
+    // {
+    //     $this->middleware('guest:user')->except('logout');
+    // }
 
      public function showLoginForm()
     {
@@ -62,19 +66,21 @@ class LoginController extends Controller
         return redirect()->route('login');
     }
 
-    public function logout(Request $request, $guard = null)
+    public function logout(Request $request)
     {
-        $this->guard($guard)->logout();
+        $guard = $this->checkGuard();
 
-        $request->session()->invalidate();
+        Auth::guard($guard)->logout();
+
+        $request->session()->flush();
        
         return redirect('/');
     }
 
-    protected function guard($guard)
-    {
-        return Auth::guard($guard);
-    }
+    // protected function guard($guard)
+    // {
+    //     return Auth::guard($guard);
+    // }
 
     protected function checkGuard()
     {

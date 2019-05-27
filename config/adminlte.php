@@ -30,7 +30,7 @@ return [
     |
     */
 
-    'logo' => '<b>SIS</b>Ponto',
+    'logo' => '<b>SIS </b>Ponto',
 
     'logo_mini' => '<b>SIS</b>P',
 
@@ -85,11 +85,11 @@ return [
     |
     */
 
-    'dashboard_url' => 'home',
+    'dashboard_url' => '/',
 
     'logout_url' => 'logout',
 
-    'logout_method' => null,
+    'logout_method' => 'POST',
 
     'login_url' => '/',
 
@@ -108,82 +108,37 @@ return [
     */
 
     'menu' => [
-        'MAIN NAVIGATION',
+        'CARTÃO PONTO',
         [
-            'text' => 'Blog',
-            'url'  => 'admin/blog',
-            'can'  => 'manage-blog',
+            'text'        => 'Registros de Ponto',
+            'url'         => '/',
+            'icon'        => 'list',
+             'icon_color' => 'green',
+            'label_color' => 'green',
         ],
         [
-            'text'        => 'Pages',
-            'url'         => 'admin/pages',
-            'icon'        => 'file',
-            'label'       => 4,
-            'label_color' => 'success',
+            'text'        => 'Alterar Batidas',
+            'url'         => 'user/alterar',
+            'icon'        => 'pencil',
+             'icon_color' => 'green',
+            'label_color' => 'green',
         ],
-        'ACCOUNT SETTINGS',
-        [
-            'text' => 'Profile',
-            'url'  => 'admin/settings',
-            'icon' => 'user',
+        'MOVIMENTAÇÕES',
+         [
+            'text'        => 'Minhas Solcitações',
+            'url'         => '/',
+            'icon'        => 'list',
+             'icon_color' => 'green',
+            'label_color' => 'green',
         ],
+           'MAIS',
         [
-            'text' => 'Change Password',
-            'url'  => 'admin/settings',
-            'icon' => 'lock',
-        ],
-        [
-            'text'    => 'Multilevel',
-            'icon'    => 'share',
-            'submenu' => [
-                [
-                    'text' => 'Level One',
-                    'url'  => '#',
-                ],
-                [
-                    'text'    => 'Level One',
-                    'url'     => '#',
-                    'submenu' => [
-                        [
-                            'text' => 'Level Two',
-                            'url'  => '#',
-                        ],
-                        [
-                            'text'    => 'Level Two',
-                            'url'     => '#',
-                            'submenu' => [
-                                [
-                                    'text' => 'Level Three',
-                                    'url'  => '#',
-                                ],
-                                [
-                                    'text' => 'Level Three',
-                                    'url'  => '#',
-                                ],
-                            ],
-                        ],
-                    ],
-                ],
-                [
-                    'text' => 'Level One',
-                    'url'  => '#',
-                ],
-            ],
-        ],
-        'LABELS',
-        [
-            'text'       => 'Important',
-            'icon_color' => 'red',
-        ],
-        [
-            'text'       => 'Warning',
+            'text'  => 'Ajuda',
+            'url'   => 'ajuda',
+            'icon'  => 'question',
             'icon_color' => 'yellow',
         ],
-        [
-            'text'       => 'Information',
-            'icon_color' => 'aqua',
-        ],
-    ],
+     ],
 
     /*
     |--------------------------------------------------------------------------
