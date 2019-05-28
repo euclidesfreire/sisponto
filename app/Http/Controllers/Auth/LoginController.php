@@ -7,7 +7,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Auth\AuthRoleController as Role;
-use App\Models\User;
+use App\Repositories\UserRepository;
 
 class LoginController extends Controller
 {
@@ -44,19 +44,19 @@ class LoginController extends Controller
 
         $credentials = $request->only('usuario', 'password');
 
-        /*
-        | Sobrescrevendo o method attemp, pois o database não
-        | usa o mesmo method de criptografia que o laravel
+        /**
+        * Sobrescrevendo o method attemp, pois o database não
+        * usa o mesmo method de criptografia que o laravel
         */
-        $user = User::where('n_folha', $credentials['usuario'])->where('web_senha', $credentials['password'])->first();
+        $user = UserRepository::attemp($credentials);
 
         if ($user) {
 
             Role::role($user); //Define Auth('guard')
 
-           /*
-            | PROVISÓRIO 
-            | Check Route do Guard Autenticado 
+           /**
+           * PROVISÓRIO 
+           * Check Route do Guard Autenticado 
            */
            $route = $this->checkGuard();
            

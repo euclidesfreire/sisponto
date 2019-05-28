@@ -9,14 +9,22 @@ use Auth;
 
 class UserRepository extends BaseRepository
 {
-	public function __construct()
+	public function __construct(User $user)
     {
-        $this->model = App\Models\User;
+        parent::__construct($user);
     }
 
    	public static function getUser($matricula)
     {
-    	return User::where('n_folhas', $matricula)->first();
+    	return User::where('n_folha', $matricula)->first();
+    }
+
+    public static function attemp($credentials)
+    {
+    	$user = User::where('n_folha', $credentials['usuario'])
+        		->where('web_senha', $credentials['password'])->first();
+
+        return $user;
     }
 
 }

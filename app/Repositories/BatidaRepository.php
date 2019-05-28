@@ -8,14 +8,14 @@ use App\Models\Batida;
 
 class BatidaRepository extends BaseRepository
 {
-	public function __construct()
+	public function __construct(Batida $batida)
     {
-        $this->model = App\Models\Batida;
+        parent::__construct($batida);
     }
 
-    public static function getBatidas($funcionario, $periodo) 
+    public static function getBatidas($funcionarioId, $periodo) 
     {
-    	$batidas = Batida::where('funcionario_id', $funcionario->id)
+    	$batidas = Batida::where('funcionario_id', $funcionarioId)
     				->whereBetween('data', [$periodo['dataInicio']->format('Y/d/m'), 
     								$periodo['dataFim']->format('Y/d/m') ])->get();
     	return $batidas;

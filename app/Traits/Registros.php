@@ -10,27 +10,20 @@ use App\Repositories\BatidaRepository;
 trait Registros 
 {
 
-	public function showRegistros($matricula, $periodo)
+	public function getRegistros($funcionarioId, $periodo)
     {
-    	$funcionario = UserRepository::getUser($matricula);
+    	// $funcionario = UserRepository::getUser($matricula);
 
-    	$periodo = $this->formatDatas($periodo);
-
-    	$batida = BatidaRepository::getBatidas($funcionario, $periodo);
+    	$batidas = BatidaRepository::getBatidas($funcionarioId, $periodo);
 
     	$rangePicker = $periodo['dataInicio']->format('d/m/Y') . ' - ' . $periodo['dataFim']->format('d/m/Y');
 
-    	while($periodo['dataInicio']->lessThanOrEqualTo($periodo['dataFim']))
-    	{
-            $periodo['dataInicio']->addDay();
-        }
-
-        return view('home', compact('funcionario', 'batidas', 'departamento', 'rangePicker'));
+        return compact('batidas', 'rangePicker');
     }
 
     /**
-	* Dividir String de Data em Data de Início 
-	* e Data de Fim
+	* Dividir String de Data em um Array
+	* Data de Início e Data de Fim
 	* @return  array('dataInicio','dataFim')
     */
     protected function formatDatas($datas){

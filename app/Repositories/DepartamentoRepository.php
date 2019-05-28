@@ -8,9 +8,9 @@ use App\Models\Departamento;
 
 class DepartamentoRepository extends BaseRepository
 {
-	public function __construct()
+	public function __construct(Departamento $departamento)
     {
-        $this->model = App\Models\Departamento;
+        parent::__construct($departamento);
     }
 
 }
