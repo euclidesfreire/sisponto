@@ -27,4 +27,15 @@ class UserRepository extends BaseRepository
         return $user;
     }
 
+    public static function getFuncionarios($departamentoId)
+    {
+        /**
+        * Selecionar Todos os Funcionarios
+        * Do Departamento do Manager
+        */
+        $funcionarios = User::where('estrutura_id', $departamentoId)->get();
+        
+        return $funcionarios;
+    }
+
 }

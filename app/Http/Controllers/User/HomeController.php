@@ -30,14 +30,15 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $funcionarioId = Auth::user()->id;
-
-        $periodo = Carbon::now()->startOfMonth()->format('d/m/Y') . ' - ' . Carbon::now()->format('d/m/Y');      
-
-        $periodo = $this->formatDatas($periodo); 
-
-        $registros = $this->getRegistros($funcionarioId, $periodo);
+       $registros = $this->getCalculo();
 
         return view('user.home', ['registros' => $registros]);
+    }
+
+    public function atualizarCalculo(Request $request)
+    {
+        $calculos = $this->postCalculo($request);
+
+        return view('user.home', ['registros' => $calculos]);
     }
 }

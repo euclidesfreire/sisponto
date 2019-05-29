@@ -3,17 +3,11 @@
 @section('title', 'SIS Ponto')
 
 @section('content_header')
-    <div class="col-md-6">
-       <span>Servidor</span>
-       <h4>{{Auth::user()->nome}}</h4>
-    </div>
-    <div class="col-md-6">
-    	<span>Departamento</span>
-        <h4></h4>
-    </div>
 @stop
 
 @section('content')
+     @include('user.includes.formulario')
+
     <table class="table table-striped">
         <thead>
             <tr>

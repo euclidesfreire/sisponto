@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Manager;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Traits\Registros;
 use Carbon\Carbon;
+use App\Repositories\UserRepository;
 
 class HomeController extends Controller
 {
@@ -29,19 +31,29 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $matricula = Auth::user()->matricula;
-        
-        $periodo = $this->geraDatas( Carbon::now()->startOfMonth()
-            ->format('d/m/Y') . " - " . Carbon::now()->format('d/m/Y') );
+        $registros = $this->getCalculo();
 
-        $registros = $this->getRegistros($matricula, $periodo);
+        $funcionarios = $this->getFuncionarios();
 
-        return view('manager.home', ['registro' => $registros]);
+        return view('manager.home', ['funcionarios' => $funcionarios, 'registros' => $registros]);
+    }
+
+    public function atualizarCalculo(Request $request)
+    {
+        $calculos = $this->postCalculo($request);
+
+        $funcionarios = $this->getFuncionarios();
+
+        return view('manager.home', ['funcionarios' => $funcionarios, 'registros' => $calculos]);
     }
 
     public function getFuncionarios()
     {
-        
+        $departamentoId = Auth::user()->estrutura_id;
+
+        $funcionarios = UserRepository::getFuncionarios($departamentoId);
+
+        return $funcionarios;
     }
 
 }

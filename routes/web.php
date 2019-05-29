@@ -25,11 +25,13 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth:admin']], function () 
 });
 
 Route::group(['prefix' => 'manager', 'middleware' => ['auth:manager']], function () {
-	Route::get('/', 'Manager\HomeController@index')->name('maneger.home');
-	Route::get('alterar', 'Manager\HomeController@index')->name('maneger.alterar');
+	Route::get('/', 'Manager\HomeController@index')->name('manager.home');
+	Route::post('atualizar', 'Manager\HomeController@atualizarCalculo')->name('manager.atualizar');
+	Route::get('alterar', 'Manager\HomeController@index')->name('manager.alterar');
 });
 
 Route::group(['prefix' => 'user', 'middleware' => ['auth:user']], function () {
 	Route::get('/', 'User\HomeController@index')->name('user.home');
-	Route::get('/alterar', 'User\HomeController@index')->name('alterar');
+	Route::post('atualizar', 'User\HomeController@atualizarCalculo')->name('user.atualizar');
+	Route::get('/alterar', 'User\HomeController@index')->name('user.alterar');
 });
