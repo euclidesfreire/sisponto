@@ -24,19 +24,15 @@ class LoginController extends Controller
 
     use AuthenticatesUsers;
 
-    //  public function __construct()
-    // {
-    //     $this->middleware('guest:user')->except('logout');
-    // }
 
      public function showLoginForm()
     {
-        $route = $this->checkGuard();
-           
-        if(!$route)
+        $guard = $this->getGuard();
+        
+        if(!$guard)
             return view('auth.login');
-
-        return redirect()->intended($route);
+           
+        return redirect()->intended($guard);
     }
   
     public function authenticate(Request $request)
@@ -52,15 +48,21 @@ class LoginController extends Controller
 
         if ($user) {
 
-            Role::role($user); //Define Auth('guard')
+            $role = Role::role($user); //Define Auth('guard')
+
+            if($role)
+                Auth::guard('manager')->login($user);
+            else 
+                Auth::guard('user')->login($user);
 
            /**
            * PROVISÓRIO 
            * Check Route do Guard Autenticado 
            */
-           $route = $this->checkGuard();
+           $guard = $this->getGuard();
+          //return print('<script> alert("'.$route.'");</script>');
            
-           return redirect()->intended($route);
+           return redirect()->intended($guard);
         }
 
         return redirect()->route('login');
@@ -68,7 +70,7 @@ class LoginController extends Controller
 
     public function logout(Request $request)
     {
-        $guard = $this->checkGuard();
+        $guard = $this->getGuard();
 
         Auth::guard($guard)->logout();
 
@@ -82,7 +84,7 @@ class LoginController extends Controller
         return Auth::guard($guard);
     }
 
-    protected function checkGuard()
+    protected function getGuard()
     {
         if($this->guard('user')->check())
             return 'user';

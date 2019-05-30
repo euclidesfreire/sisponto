@@ -15,9 +15,9 @@ class AuthRoleController extends Controller
     	$structResponsible = EstruturaRepository::structResponsible($user);
 
     	if($structResponsible){
-    		return auth('manager')->login($user);
+    		return true;
      	}
 
-     	return auth('user')->login($user);
+     	return false;
     }
 }

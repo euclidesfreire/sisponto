@@ -6,7 +6,7 @@
 @stop
 
 @section('content')
-    @include('manager.includes.formulario')
+    @include('manager.includes.formulario_calculo')
 
      <table class="table table-striped">
         <thead>
@@ -36,4 +36,13 @@
             @endforeach
         </tbody>
     </table>
+@stop
+
+@section('js')
+   <!--  <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="{{url('js/daterangepicker.min.js')}}"></script>
+    <script src="https://adminlte.io/themes/AdminLTE/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="{{url('js/dataTables.bootstrap.min.js')}}"></script>
+    <script type="text/javascript" src="https://adminlte.io/themes/AdminLTE/bower_components/fastclick/lib/fastclick.js"></script>
+    <script type="text/javascript" src="{{url('js/sisprint.js')}}"></script> -->
 @stop
