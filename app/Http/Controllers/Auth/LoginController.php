@@ -60,8 +60,7 @@ class LoginController extends Controller
            * Check Route do Guard Autenticado 
            */
            $guard = $this->getGuard();
-          //return print('<script> alert("'.$route.'");</script>');
-           
+                 
            return redirect()->intended($guard);
         }
 
@@ -72,7 +71,7 @@ class LoginController extends Controller
     {
         $guard = $this->getGuard();
 
-        Auth::guard($guard)->logout();
+        $this->guard($guard)->logout();
 
         $request->session()->flush();
        

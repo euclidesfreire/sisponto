@@ -5,6 +5,7 @@ namespace App\Traits;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use App\Repositories\UserRepository;
 use App\Repositories\BatidaRepository;
 
@@ -28,7 +29,7 @@ trait Registros
 
         $periodo = Carbon::now()->startOfMonth()->format('d/m/Y') . ' - ' . Carbon::now()->format('d/m/Y');      
 
-        $periodo = $this->formatDatas($periodo); 
+        $periodo = $this->explodeDatas($periodo); 
 
         $registros = $this->getRegistros($funcionarioId, $periodo);
 
@@ -44,11 +45,23 @@ trait Registros
 
         $funcionarioId = $funcionario->id;
 
-        $periodo = $this->formatDatas($input['periodo']);
+        $periodo = $this->explodeDatas($input['periodo']);
 
         $registros = $this->getRegistros($funcionarioId, $periodo);
 
         return $registros;
+    }
+
+    public function getFaltas($periodo)
+    {
+        $periodo = $this->explodeDatas($periodo);
+
+        $periodo = CarbonPeriod::create($periodo['dataInicio'], $periodo['dataFim']);
+
+        foreach ($p as $data) {
+            echo $data . "<br/>";
+        }
+
     }
 
     /**
@@ -56,7 +69,7 @@ trait Registros
 	* Data de Início e Data de Fim
 	* @return  array('dataInicio','dataFim')
     */
-    protected function formatDatas($datas)
+    protected function explodeDatas($datas)
     {
         $periodo = explode(' - ', $datas);
         $dataInicio = Carbon::createFromFormat('!d/m/Y', $periodo[0]);

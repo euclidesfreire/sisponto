@@ -44,7 +44,9 @@ class HomeController extends Controller
 
         $funcionarios = $this->getFuncionarios();
 
-        return view('manager.home', ['funcionarios' => $funcionarios, 'registros' => $calculos]);
+        $this->getFaltas($calculos['rangePicker'], $calculos['batidas']);
+
+        // return view('manager.home', ['funcionarios' => $funcionarios, 'registros' => $calculos]);
     }
 
     public function getFuncionarios()
