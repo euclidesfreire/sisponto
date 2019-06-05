@@ -40,13 +40,11 @@ class HomeController extends Controller
 
     public function atualizarCalculo(Request $request)
     {
-        $calculos = $this->postCalculo($request);
+        $registros = $this->postCalculo($request);
 
         $funcionarios = $this->getFuncionarios();
 
-        $this->getFaltas($calculos['rangePicker'], $calculos['batidas']);
-
-        // return view('manager.home', ['funcionarios' => $funcionarios, 'registros' => $calculos]);
+        // return view('manager.home', ['funcionarios' => $funcionarios, 'registros' => $registros]);
     }
 
     public function getFuncionarios()

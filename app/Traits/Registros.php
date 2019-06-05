@@ -49,24 +49,72 @@ trait Registros
 
         $registros = $this->getRegistros($funcionarioId, $periodo);
 
+        $registros['batidas'] = $this->filterBatidas($periodo,$registros['batidas']);
+
         return $registros;
     }
 
-    public function getFaltas($periodo)
+    /**
+     * Array da Diferenças das Datas do Período
+     * E das Datas de Batidas
+     *
+     * @return array
+     */
+    public function dateDiff($periodo, $batidas)
     {
-        $periodo = $this->explodeDatas($periodo);
 
         $periodo = CarbonPeriod::create($periodo['dataInicio'], $periodo['dataFim']);
 
-        foreach ($p as $data) {
-            echo $data . "<br/>";
+        $datas = array();
+
+        foreach ($periodo as $data) {
+            foreach ($data as $key => $value) {
+                if($key == 'date'){
+                    $dataString = date_create($value);
+                    $datas[] = date_format($dataString, 'Y-m-d H:i:s');
+                }
+            }
         }
+
+        $batidasDatas = array();
+
+        foreach($batidas as $batida)
+        {
+            $batidasDatas[] = $batida->data;
+        }
+
+        $datasDiff = array_diff($datas, $batidasDatas);
+    
+        return $datasDiff;
+
+    }
+
+    public function filterBatidas($periodo, $batidas)
+    {
+
+        $datasDiff = $this->dateDiff($periodo,$batidas);
+
+        $newBatidas = array();
+
+        foreach($batidas as $batida)
+        {
+            if(in_array($batida->data, $datasDiff))
+            {
+
+            } else {
+
+            }
+            
+        }
+        
+        return $newBatidas;
 
     }
 
     /**
 	* Dividir String de Data em um Array
 	* Data de Início e Data de Fim
+    *
 	* @return  array('dataInicio','dataFim')
     */
     protected function explodeDatas($datas)

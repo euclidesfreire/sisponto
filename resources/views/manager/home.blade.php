@@ -37,9 +37,9 @@
                     <td>Faltas</td>
                     <td>Extra</td>
                     <td>Carga</td>
-                    <td>{{ $batida->debito}}</td>
-                    <td>{{ $batida->credito}}</td>
-                    <td>{{ $batida->total}}</td>
+                    <td>Debito</td>
+                    <td>Credito</td>
+                    <td>Total</td>
             </tr>
             @endforeach
         </tbody>
