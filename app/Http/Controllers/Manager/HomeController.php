@@ -44,7 +44,7 @@ class HomeController extends Controller
 
         $funcionarios = $this->getFuncionarios();
 
-        // return view('manager.home', ['funcionarios' => $funcionarios, 'registros' => $registros]);
+        return view('manager.home', ['funcionarios' => $funcionarios, 'registros' => $registros]);
     }
 
     public function getFuncionarios()

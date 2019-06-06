@@ -8,6 +8,8 @@ use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use App\Repositories\UserRepository;
 use App\Repositories\BatidaRepository;
+use App\Repositories\HorariosRepository; 
+use App\Repositories\FeriadosRepository;
 
 trait Registros 
 {
@@ -49,18 +51,18 @@ trait Registros
 
         $registros = $this->getRegistros($funcionarioId, $periodo);
 
-        $registros['batidas'] = $this->filterBatidas($periodo,$registros['batidas']);
+        $registros['batidas'] = $this->filterBatidas($funcionarioId, $periodo, $registros['batidas']);
 
         return $registros;
     }
 
     /**
-     * Array da Diferenças das Datas do Período
-     * E das Datas de Batidas
+     * Array das Datas do Período
+     * De Batidas
      *
      * @return array
      */
-    public function dateDiff($periodo, $batidas)
+    public function datePeriod($periodo, $batidas)
     {
 
         $periodo = CarbonPeriod::create($periodo['dataInicio'], $periodo['dataFim']);
@@ -76,38 +78,91 @@ trait Registros
             }
         }
 
-        $batidasDatas = array();
-
-        foreach($batidas as $batida)
-        {
-            $batidasDatas[] = $batida->data;
-        }
-
-        $datasDiff = array_diff($datas, $batidasDatas);
     
-        return $datasDiff;
+        return $datas;
 
     }
 
-    public function filterBatidas($periodo, $batidas)
+    public function filterBatidas($funcionarioId, $periodo, $batidas)
     {
 
-        $datasDiff = $this->dateDiff($periodo,$batidas);
+
+        $datas = $this->datePeriod($periodo,$batidas);
+
+         $semana = array(
+            'Mon' => 1,
+            'Tue' => 2,
+            'Wed' => 3,
+            'Thu' => 4,
+            'Fri' => 5,
+            'Sat' => 6,
+            'Sun' => 7, 
+        );
 
         $newBatidas = array();
 
         foreach($batidas as $batida)
         {
-            if(in_array($batida->data, $datasDiff))
+            $newBatidas[] = [
+                'data' => $batida->data,
+                'entrada1' => $batida->entrada1,
+                'saida1' => $batida->saida1,
+                'entrada2' => $batida->entrada2,
+                'saida2' => $batida->saida2,
+            ];
+            
+        }
+
+        $newBatidasCombine = array_combine(array_column($newBatidas, 'data'),$newBatidas);
+
+        $tmpBatidas = array();
+
+
+        foreach($datas as $data)
+        {
+            if(in_array($data, array_column($newBatidas, 'data')))
             {
+                $tmpBatidas[] =  $newBatidasCombine[$data];
 
             } else {
 
+                $dayOff = 'Falta';
+
+                $funcionario = array('horario' => 0, 'diaSemana' => 0);
+
+                $funcionario['horario'] = UserRepository::getHorario($funcionarioId);
+
+                $funcionario['horario'] = $funcionario['horario'][0]->horario_num;
+
+                $dataString = date_create($data);
+
+                $funcionario['diaSemana'] =  $semana[date_format($dataString, 'D')];
+
+                $folga = HorariosRepository::getFolga($funcionario);
+
+                $feriado = FeriadosRepository::getFeriado(date_format($dataString, 'Y/d/m'));
+
+                if($folga[0]->folga){
+                    $dayOff = "Folga";
+                } elseif($feriado){
+                    $dayOff = "Feriado";
+                }
+
+                $tmpBatidas[] = [
+                    'data' => $batida->data,
+                    'entrada1' => $dayOff,
+                    'saida1' => $dayOff,
+                    'entrada2' => $dayOff,
+                    'saida2' => $dayOff,
+                ];
+
+    
             }
-            
+
         }
         
-        return $newBatidas;
+        
+       return $tmpBatidas;
 
     }
 

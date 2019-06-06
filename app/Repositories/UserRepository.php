@@ -27,6 +27,15 @@ class UserRepository extends BaseRepository
         return $user;
     }
 
+    public static function getHorario($funcionarioId)
+    {
+        $userHorario = User::select('horario_num')
+                ->where('id', $funcionarioId)->get();
+
+        return $userHorario;
+    }
+
+
     public static function getFuncionarios($departamentoId)
     {
         /**
