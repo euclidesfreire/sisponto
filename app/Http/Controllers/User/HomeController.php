@@ -1,27 +1,17 @@
-<?php
+BatidasTrait<?php
 
 namespace App\Http\Controllers\User;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use App\Traits\Registros;
+use App\Traits\BatidasTrait;
 use Carbon\Carbon;
 
 class HomeController extends Controller
 {
-     use Registros;
+     use BatidasTrait;
 
-
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('auth:user');
-    }
 
     /**
      * Show the application dashboard.

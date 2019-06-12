@@ -10,14 +10,18 @@ class BatidaRepository extends BaseRepository
 {
 	public function __construct(Batida $batida)
     {
-        parent::__construct($batida);
+        $this->model = $batida;
     }
+    
 
     public static function getBatidas($funcionarioId, $periodo) 
     {
-    	$batidas = Batida::where('funcionario_id', $funcionarioId)
-    				->whereBetween('data', [$periodo['dataInicio']->format('Y/d/m'), 
-    								$periodo['dataFim']->format('Y/d/m') ])->get();
+
+    	$batidas = Batida::select('id', 'funcionario_id', 'data', 'entrada1', 'saida1','entrada2','saida2')
+            ->where('funcionario_id', $funcionarioId)
+    		->whereBetween('data', [$periodo['dataInicio']->format('Y/d/m'),
+                $periodo['dataFim']->format('Y/d/m') ])->get();
+            
     	return $batidas;
     }
 

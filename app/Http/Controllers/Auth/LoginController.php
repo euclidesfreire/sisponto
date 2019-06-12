@@ -31,8 +31,8 @@ class LoginController extends Controller
         
         if(!$guard)
             return view('auth.login');
-           
-        return redirect()->intended($guard);
+
+        return redirect()->route($guard . '.home');
     }
   
     public function authenticate(Request $request)
