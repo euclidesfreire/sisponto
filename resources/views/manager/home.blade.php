@@ -16,9 +16,7 @@
                 <th>Sai. 1</th>
                 <th>Ent. 2</th>
                 <th>Sai. 2</th>
-                <th>Faltas</th>
                 <th>Extra</th>
-                <th>Carga</th>
                 <th>Débito</th>
                 <th>Crédito</th>
                 <th>Total</th>
@@ -31,17 +29,17 @@
                        @elseif($batida['entrada1'] === 'Falta')
                         {{'danger'}}
                        @endif">
-                    <td>{{ $batida['data'] }}</td>
-                    <td>{{ $batida['entrada1']}}</td>
-                    <td>{{ $batida['saida1']}}</td>
-                    <td>{{ $batida['entrada2']}}</td>
-                    <td>{{ $batida['saida2']}}</td>
-                    <td>Faltas</td>
-                    <td>Extra</td>
-                    <td>Carga</td>
-                    <td>Debito</td>
-                    <td>Credito</td>
-                    <td>Total</td>
+                <td>{{ $batida['data']}}</td>
+                <td>{{ $batida['entrada1']}}</td>
+                <td>{{ $batida['saida1']}}</td>
+                <td>{{ $batida['entrada2']}}</td>
+                <td>{{ $batida['saida2']}}</td>
+                <td>{{ $batida['extra']}}</td>
+                <td>{{ $batida['debito']}}</td>
+                <td>{{ $batida['credito']}}</td>
+                <td>{{ $batida['total']}}</td>
+            </tr>
+            </tr>
             </tr>
             @endforeach
         </tbody>

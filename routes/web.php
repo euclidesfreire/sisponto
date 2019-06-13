@@ -28,8 +28,8 @@ Route::group(['prefix' => 'manager', 'middleware' => ['auth:manager']], function
 	Route::get('/', 'Manager\HomeController@index')->name('manager.home');
 
 	Route::group(['prefix' => 'batidas'], function () {
-		Route::get('/', 'Manager\BatidasController@index')->name('manager.batidas.index');
-		Route::post('/atualizar', 'Manager\BatidasController@read')->name('manager.batidas.atualizar');
+		Route::get('/read', 'Manager\BatidasController@getRead')->name('manager.batidas.read');
+		Route::post('/read', 'Manager\BatidasController@postRead')->name('manager.batidas.read');
 		Route::post('/edit', 'Manager\HomeController@edit')->name('manager.batidas.edit');
 		Route::get('/edit', 'Manager\HomeController@edit')->name('manager.batidas.edit');
 	});
@@ -39,9 +39,9 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth:user']], function () {
 	Route::get('/', 'User\HomeController@index')->name('user.home');
 	
 	Route::group(['prefix' => 'batidas'], function () {
-		Route::get('/', 'Manager\BatidasController@index')->name('manager.batidas.index');
-		Route::post('/atualizar', 'Manager\BatidasController@read')->name('manager.batidas.atualizar');
-		Route::post('/edit', 'Manager\HomeController@edit')->name('manager.batidas.edit');
-		Route::get('/edit', 'Manager\HomeController@edit')->name('manager.batidas.edit');
+		Route::get('/read', 'User\BatidasController@getRead')->name('user.batidas.read');
+		Route::post('/read', 'User\BatidasController@postRead')->name('user.batidas.read');
+		Route::post('/edit', 'User\HomeController@edit')->name('user.batidas.edit');
+		Route::get('/edit', 'User\HomeController@edit')->name('user.batidas.edit');
 	});
 });

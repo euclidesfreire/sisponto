@@ -6,10 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
-use App\Repositories\UserRepository;
-use App\Repositories\BatidaRepository;
-use App\Repositories\HorariosRepository; 
-use App\Repositories\FeriadosRepository;
 
 trait BatidasTrait 
 {
@@ -18,34 +14,36 @@ trait BatidasTrait
     *
     * @param Integer $funcionarioId
     * @param Array Time $periodo 
-    * @return Array('batidas', 'rangePicker')
+    * @return Array $batidas
     */
 	public function getBatidas($funcionarioId, $periodo)
     {
-    	$batidas = BatidaRepository::getBatidas($funcionarioId, $periodo);
+    	$batidas = $this->batidaRepository->getBatidas($funcionarioId, $periodo);
 
-    	$rangePicker = $periodo['dataInicio']->format('d/m/Y') . ' - ' . $periodo['dataFim']->format('d/m/Y');
-
-        return compact('batidas', 'rangePicker');
+        return $batidas;
     }
 
 
     /**
     * Get Index  
     *
-    * @return Array $registros
+    * @return Array Compat ('batidas','periodoString')
     */
     public function getCalculo()
     {
         $funcionarioId = Auth::user()->id;
 
-        $periodo = Carbon::now()->startOfMonth()->format('d/m/Y') . ' - ' . Carbon::now()->format('d/m/Y');      
+        $periodoString = Carbon::now()->startOfMonth()->format('d/m/Y') . ' - ' . Carbon::now()->format('d/m/Y');      
 
-        $periodo = $this->explodeDatas($periodo); 
+        $periodo = $this->explodeDatas($periodoString); 
 
-        $registros = $this->getBatidas($funcionarioId, $periodo);
+        $batidas = $this->getBatidas($funcionarioId, $periodo);
 
-        return $registros;
+        $batidas = $this->filterBatidas($batidas);
+
+        $batidas = $this->checkBatidas($funcionarioId, $batidas, $periodo);
+
+        return compact('batidas','periodoString');
     }
 
 
@@ -56,19 +54,26 @@ trait BatidasTrait
     */
     public function postCalculo(Request $request)
     {
-        $input = $request->all();
+        $input = array(
+            'matricula' => $request->input('matricula'),
+            'periodo' => $request->input('periodo'),
+        );
 
-        $funcionario = UserRepository::getUser($input['matricula']);
+        $funcionario = $this->userRepository->getUser($input['matricula']);
 
         $funcionarioId = $funcionario->id;
 
         $periodo = $this->explodeDatas($input['periodo']);
 
-        $registros = $this->getBatidas($funcionarioId, $periodo);
+        $batidas = $this->getBatidas($funcionarioId, $periodo);
 
-        $registros['batidas'] = $this->filterBatidas($funcionarioId, $periodo, $registros['batidas']);
+        $batidas = $this->filterBatidas($batidas);
 
-        return $registros;
+        $batidas = $this->checkBatidas($funcionarioId, $batidas, $periodo);
+
+        $periodoString = $input['periodo'];
+
+        return compact('batidas','periodoString');
     }
 
     /**
@@ -76,22 +81,27 @@ trait BatidasTrait
     *
     * @return Array $newBatidas
     */
-    public function filterBatidas($funcionarioId, $periodo, $batidas)
+    public function filterBatidas($batidas)
     {
         $newBatidas = array();
 
         foreach($batidas as $batida)
         {
+
             $newBatidas[] = [
                 'data' => $batida->data,
                 'entrada1' => $batida->entrada1,
                 'saida1' => $batida->saida1,
                 'entrada2' => $batida->entrada2,
                 'saida2' => $batida->saida2,
+                'extra' => 'extra',
+                'debito'=> 'debito' ,
+                'credito'=> 'credito',
+                'total' => 'total',
             ];
             
         }
-        
+    
         return $newBatidas;
 
     }
@@ -103,9 +113,9 @@ trait BatidasTrait
      * @param Array $batidas
      * @return Array $datas
      */
-    public function checkBatidas($batidas,$periodo)
+    public function checkBatidas($funcionarioId, $batidas, $periodo)
     {
-        $batidasTmp = array();
+        $newBatidas = array();
         $BatidasCombine = array_combine(array_column($batidas, 'data'),$batidas);
         $datas = $this->datePeriod($periodo);
 
@@ -123,7 +133,7 @@ trait BatidasTrait
         {
             if(in_array($data, array_column($batidas, 'data')))
             {
-                $batidasTmp[] =  $BatidasCombine[$data];
+                $newBatidas[] =  $BatidasCombine[$data];
 
             } else {
 
@@ -131,7 +141,7 @@ trait BatidasTrait
 
                 $funcionario = array('horario' => 0, 'diaSemana' => 0);
 
-                $funcionario['horario'] = UserRepository::getHorario($funcionarioId);
+                $funcionario['horario'] = $this->userRepository->getHorario($funcionarioId);
 
                 $funcionario['horario'] = $funcionario['horario'][0]->horario_num;
 
@@ -139,9 +149,9 @@ trait BatidasTrait
 
                 $funcionario['diaSemana'] =  $semana[date_format($dataString, 'D')];
 
-                $folga = HorariosRepository::getFolga($funcionario);
+                $folga = $this->horariosRepository->getFolga($funcionario);
 
-                $feriado = FeriadosRepository::getFeriado(date_format($dataString, 'Y/d/m'));
+                $feriado = $this->feriadosRepository->getFeriado(date_format($dataString, 'Y/d/m'));
 
                 if($folga[0]->folga){
                     $dayOff = "Folga";
@@ -149,18 +159,24 @@ trait BatidasTrait
                     $dayOff = "Feriado";
                 }
 
-                $batidasTmp[] = [
-                    'data' => $batida->data,
+                $newBatidas[] = [
+                    'data' => $data,
                     'entrada1' => $dayOff,
                     'saida1' => $dayOff,
                     'entrada2' => $dayOff,
                     'saida2' => $dayOff,
+                    'extra' => 'extra',
+                    'debito'=> 'debito',
+                    'credito'=> 'credito',
+                    'total' => 'total',
                 ];
 
     
             }
 
         }
+
+        return $newBatidas;
 
     }
 
@@ -197,7 +213,7 @@ trait BatidasTrait
 	* Data de Início e Data de Fim
     *
     * @param String $datas
-	* @return  array('dataInicio','dataFim')
+	* @return  array compact ('dataInicio','dataFim')
     */
     protected function explodeDatas($datas)
     {

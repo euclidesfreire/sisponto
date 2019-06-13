@@ -10,12 +10,12 @@ class HorariosRepository extends BaseRepository
 {
 	public function __construct(Horarios $horarios)
     {
-        parent::__construct($horarios);
+       $this->model = $horarios;
     }
 
-    public static function getFolga($funcionario) 
+    public function getFolga($funcionario) 
     {
-    	$folga = Horarios::select('folga')
+    	$folga = $this->model->select('folga')
         ->where('numero', $funcionario['horario'])
     	->where('dia_semana', $funcionario['diaSemana'])->get();
         

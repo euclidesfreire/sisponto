@@ -14,10 +14,9 @@ class BatidaRepository extends BaseRepository
     }
     
 
-    public static function getBatidas($funcionarioId, $periodo) 
+    public function getBatidas($funcionarioId, $periodo) 
     {
-
-    	$batidas = Batida::select('id', 'funcionario_id', 'data', 'entrada1', 'saida1','entrada2','saida2')
+    	$batidas = $this->model->select('id', 'funcionario_id', 'data', 'entrada1', 'saida1','entrada2','saida2')
             ->where('funcionario_id', $funcionarioId)
     		->whereBetween('data', [$periodo['dataInicio']->format('Y/d/m'),
                 $periodo['dataFim']->format('Y/d/m') ])->get();

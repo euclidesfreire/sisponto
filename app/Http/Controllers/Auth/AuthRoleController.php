@@ -10,9 +10,17 @@ use App\Repositories\EstruturaRepository;
 
 class AuthRoleController extends Controller
 {
-    static public function role($user)
+
+	protected $estruturaRepository;
+
+	public function __construct(EstruturaRepository $estrutura)
+	{
+		$this->estruturaRepository = $estrutura;
+	}
+
+    public function role($user)
     {
-    	$structResponsible = EstruturaRepository::structResponsible($user);
+    	$structResponsible = $this->estruturaRepository->structResponsible($user);
 
     	if($structResponsible){
     		return true;

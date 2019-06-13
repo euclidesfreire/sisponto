@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Manager;
+namespace App\Http\Controllers\User;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use App\Repositories\UserRepository;
 use App\Repositories\BatidaRepository;
 use App\Repositories\HorariosRepository; 
@@ -13,7 +12,7 @@ use App\Traits\BatidasTrait;
 
 class BatidasController extends Controller
 {
-	use BatidasTrait;
+   use BatidasTrait;
 
     protected $userRepository;
     protected $batidaRepository;
@@ -36,27 +35,16 @@ class BatidasController extends Controller
 	public function getRead()
     {
         $registros = $this->getCalculo();
-
-        $funcionarios = $this->getFuncionarios(); 
  
-        return view('manager.home', ['registros' => $registros, 'funcionarios' => $funcionarios]);
+        return view('user.home', ['registros' => $registros]);
     }
 
     public function postRead(Request $request)
     {
         $registros = $this->postCalculo($request);
-
-        $funcionarios = $this->getFuncionarios(); 
  
-        return view('manager.home', ['registros' => $registros, 'funcionarios' => $funcionarios]);
+        return view('user.home', ['registros' => $registros]);
     }
 
-    public function getFuncionarios()
-    {
-        $departamentoId = Auth::user()->estrutura_id;
 
-        $funcionarios = $this->userRepository->getFuncionarios($departamentoId);
-
-        return $funcionarios;
-    }
 }

@@ -11,38 +11,38 @@ class UserRepository extends BaseRepository
 {
 	public function __construct(User $user)
     {
-        parent::__construct($user);
+        $this->model = $user;
     }
 
-   	public static function getUser($matricula)
+   	public function getUser($matricula)
     {
-    	return User::where('n_folha', $matricula)->first();
+    	return $this->model->where('n_folha', $matricula)->first();
     }
 
-    public static function attemp($credentials)
+    public function attemp($credentials)
     {
-    	$user = User::where('n_folha', $credentials['usuario'])
+    	$user = $this->model->where('n_folha', $credentials['usuario'])
         		->where('web_senha', $credentials['password'])->first();
 
         return $user;
     }
 
-    public static function getHorario($funcionarioId)
+    public function getHorario($funcionarioId)
     {
-        $userHorario = User::select('horario_num')
+        $userHorario = $this->model->select('horario_num')
                 ->where('id', $funcionarioId)->get();
 
         return $userHorario;
     }
 
 
-    public static function getFuncionarios($departamentoId)
+    public function getFuncionarios($departamentoId)
     {
         /**
         * Selecionar Todos os Funcionarios
         * Do Departamento do Manager
         */
-        $funcionarios = User::where('estrutura_id', $departamentoId)->get();
+        $funcionarios = $this->model->where('estrutura_id', $departamentoId)->get();
         
         return $funcionarios;
     }

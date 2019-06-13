@@ -8,14 +8,14 @@ use App\Models\Feriados;
 
 class FeriadosRepository extends BaseRepository
 {
-	public function __construct(Horarios $horarios)
+	public function __construct(Feriados $feriados)
     {
-        parent::__construct($horarios);
+       $this->model = $feriados;
     }
 
-    public static function getFeriado($data) 
+    public function getFeriado($data) 
     {
-    	$feriado = Feriados::where('data', $data)->count();
+    	$feriado = $this->model->where('data', $data)->count();
         
     	return $feriado;
     }

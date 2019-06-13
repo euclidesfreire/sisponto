@@ -24,8 +24,16 @@ class LoginController extends Controller
 
     use AuthenticatesUsers;
 
+    protected $userRepository;
+    protected $role;
 
-     public function showLoginForm()
+    public function __construct(UserRepository $user, Role $role)
+    {
+        $this->userRepository = $user;
+        $this->role = $role;
+    }
+
+    public function showLoginForm()
     {
         $guard = $this->getGuard();
         
@@ -44,11 +52,11 @@ class LoginController extends Controller
         * Sobrescrevendo o method attemp, pois o database não
         * usa o mesmo method de criptografia que o laravel
         */
-        $user = UserRepository::attemp($credentials);
+        $user = $this->userRepository->attemp($credentials);
 
         if ($user) {
 
-            $role = Role::role($user); //Define Auth('guard')
+            $role = $this->role->role($user); //Define Auth('guard')
 
             if($role)
                 Auth::guard('manager')->login($user);

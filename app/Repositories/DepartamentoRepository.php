@@ -10,7 +10,7 @@ class DepartamentoRepository extends BaseRepository
 {
 	public function __construct(Departamento $departamento)
     {
-        parent::__construct($departamento);
+        $this->model = $departamento;
     }
 
 }

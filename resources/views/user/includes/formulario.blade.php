@@ -1,5 +1,5 @@
 <div class="row">
-    <form class="form" method="POST" action="{{ route('user.atualizar')}}">
+    <form class="form" method="POST" action="{{ route('user.batidas.read')}}">
         {!! csrf_field() !!}
         
         <div class="form-group col-md-5">
@@ -14,7 +14,7 @@
                     <div class="input-group-addon">
                         <i class="fa fa-calendar"></i>
                     </div>
-                    <input name="periodo" type="text" class="form-control pull-right" id="datepicker" value="{{ $registros['rangePicker'] }}">
+                    <input name="periodo" type="text" class="form-control pull-right" id="datepicker" value="{{ $registros['periodoString'] }}">
                 </div>
             <!-- /.input group -->
         </div>
