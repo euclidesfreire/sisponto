@@ -11,21 +11,20 @@
 
 @section('body')
    <div class="container login-box">
-
-            <div class="">
-                <h1>{!! config('adminlte.logo', '<b>SIS</b>PONTO') !!}</h1>
-                    
-                <span>Use sua conta do Active Directory</span>
-             </div>
             
-            <div class="form-container sign-in-container">
+             <div class="form-container sign-in-container">
+                <div class="">
+                    <h1>{!! config('adminlte.logo', '<b>SIS</b>PONTO') !!}</h1>
+                    
+                    <span>Use sua conta do Active Directory</span>
+                </div>
+
                 <form action="{{ url(config('adminlte.login_url', '/')) }}" method="post">
                     {!! csrf_field() !!}
                     <div class="form-group has-feedback {{ $errors->has('email') ? 'has-error' : '' }}">
                         <!--   type="email" -->
-                            <input type="text" name="usuario" class="form-control" value="{{ old('usuario') }}"
+                        <input type="text" name="usuario" class="form-control" value="{{ old('usuario') }}"
                             placeholder="Usuário">
-                        <span class="glyphicon glyphicon-user form-control-feedback"></span>
                         @if ($errors->has('usuario'))
                             <span class="help-block">
                                 <strong>{{ $errors->first('usuario') }}</strong>
@@ -35,7 +34,6 @@
                     <div class="form-group has-feedback {{ $errors->has('password') ? 'has-error' : '' }}">
                         <input type="password" name="password" class="form-control"
                             placeholder="{{ trans('adminlte::adminlte.password') }}">
-                        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                         @if ($errors->has('password'))
                             <span class="help-block">
                                 <strong>{{ $errors->first('password') }}</strong>
@@ -54,9 +52,14 @@
                         <button class="ghost" id="signUp">Contato</button>
                     </div>
                 </div>
-                
             </div>
         </div>
+
+        <footer>
+            <p>
+                Mantido pelo Núcleo de Tecnologia da Informação da Justiça Federal do Maranhão - NUTEC.<br>nutec.ma@trf1.jus.br - Ramais 5600/5748/5727
+            </p>
+        </footer>
 @stop
 
 @section('adminlte_js')

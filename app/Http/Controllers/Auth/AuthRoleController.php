@@ -6,18 +6,26 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use App\Models\Estrutura;
+use App\Repositories\EstruturaRepository;
 
 class AuthRoleController extends Controller
 {
-    static public function role($user)
-    {
-    	$estrutura = Estrutura::where('id', $user->estrutura_id)->where('pessoa_responsavel_id', $user->id)->first();
 
-    	if($estrutura){
-    		return auth('manager')->login($user);
+	protected $estruturaRepository;
+
+	public function __construct(EstruturaRepository $estrutura)
+	{
+		$this->estruturaRepository = $estrutura;
+	}
+
+    public function role($user)
+    {
+    	$structResponsible = $this->estruturaRepository->structResponsible($user);
+
+    	if($structResponsible){
+    		return true;
      	}
 
-     	return auth('user')->login($user);
+     	return false;
     }
 }

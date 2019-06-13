@@ -7,7 +7,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Auth\AuthRoleController as Role;
-use App\Models\User;
+use App\Repositories\UserRepository;
 
 class LoginController extends Controller
 {
@@ -24,19 +24,23 @@ class LoginController extends Controller
 
     use AuthenticatesUsers;
 
-    //  public function __construct()
-    // {
-    //     $this->middleware('guest:user')->except('logout');
-    // }
+    protected $userRepository;
+    protected $role;
 
-     public function showLoginForm()
+    public function __construct(UserRepository $user, Role $role)
     {
-        $route = $this->checkGuard();
-           
-        if(!$route)
+        $this->userRepository = $user;
+        $this->role = $role;
+    }
+
+    public function showLoginForm()
+    {
+        $guard = $this->getGuard();
+        
+        if(!$guard)
             return view('auth.login');
 
-        return redirect()->intended($route);
+        return redirect()->route($guard . '.home');
     }
   
     public function authenticate(Request $request)
@@ -44,23 +48,28 @@ class LoginController extends Controller
 
         $credentials = $request->only('usuario', 'password');
 
-        /*
-        | Sobrescrevendo o method attemp, pois o database não
-        | usa o mesmo method de criptografia que o laravel
+        /**
+        * Sobrescrevendo o method attemp, pois o database não
+        * usa o mesmo method de criptografia que o laravel
         */
-        $user = User::where('n_folha', $credentials['usuario'])->where('web_senha', $credentials['password'])->first();
+        $user = $this->userRepository->attemp($credentials);
 
         if ($user) {
 
-            Role::role($user); //Define Auth('guard')
+            $role = $this->role->role($user); //Define Auth('guard')
 
-           /*
-            | PROVISÓRIO 
-            | Check Route do Guard Autenticado 
+            if($role)
+                Auth::guard('manager')->login($user);
+            else 
+                Auth::guard('user')->login($user);
+
+           /**
+           * PROVISÓRIO 
+           * Check Route do Guard Autenticado 
            */
-           $route = $this->checkGuard();
-           
-           return redirect()->intended($route);
+           $guard = $this->getGuard();
+                 
+           return redirect()->intended($guard);
         }
 
         return redirect()->route('login');
@@ -68,21 +77,21 @@ class LoginController extends Controller
 
     public function logout(Request $request)
     {
-        $guard = $this->checkGuard();
+        $guard = $this->getGuard();
 
-        Auth::guard($guard)->logout();
+        $this->guard($guard)->logout();
 
         $request->session()->flush();
        
         return redirect('/');
     }
 
-    // protected function guard($guard)
-    // {
-    //     return Auth::guard($guard);
-    // }
+    protected function guard($guard)
+    {
+        return Auth::guard($guard);
+    }
 
-    protected function checkGuard()
+    protected function getGuard()
     {
         if($this->guard('user')->check())
             return 'user';

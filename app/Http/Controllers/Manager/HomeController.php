@@ -7,16 +7,6 @@ use App\Http\Controllers\Controller;
 
 class HomeController extends Controller
 {
-   /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('auth:manager');
-    }
-
     /**
      * Show the application dashboard.
      *
@@ -24,6 +14,8 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('manager.home');
+        return redirect()->route('manager.batidas.read');
     }
+
+
 }
