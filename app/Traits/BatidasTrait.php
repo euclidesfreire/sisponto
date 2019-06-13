@@ -43,6 +43,8 @@ trait BatidasTrait
 
         $batidas = $this->checkBatidas($funcionarioId, $batidas, $periodo);
 
+        $batidas = $this->formatTime($batidas);
+
         return compact('batidas','periodoString');
     }
 
@@ -71,6 +73,8 @@ trait BatidasTrait
 
         $batidas = $this->checkBatidas($funcionarioId, $batidas, $periodo);
 
+        $batidas = $this->formatTime($batidas);
+
         $periodoString = $input['periodo'];
 
         return compact('batidas','periodoString');
@@ -87,7 +91,6 @@ trait BatidasTrait
 
         foreach($batidas as $batida)
         {
-
             $newBatidas[] = [
                 'data' => $batida->data,
                 'entrada1' => $batida->entrada1,
@@ -107,11 +110,43 @@ trait BatidasTrait
     }
 
     /**
-     * Verificar Batidas ('Falta','Folga','Feriado')
+     * Formatar Datas de Batidas 'd-m-Y - Dia da Semana'
      *
      * @param Array $batidas
+     * @return Array $newBatias
+     */
+    public function formatTime($batidas)
+    {
+        $newBatidas = $batidas;
+
+         $semana = array(
+            'Mon' => 'Seg',
+            'Tue' => 'Ter',
+            'Wed' => 'Qua',
+            'Thu' => 'Qui',
+            'Fri' => 'Sex',
+            'Sat' => 'Sab',
+            'Sun' => 'Dom', 
+        );
+
+        foreach($newBatidas as &$batida)
+        {
+            $data =  $semana[date_format(date_create($batida['data']), 'D')];
+
+            $batida['data'] = date_format(date_create($batida['data']), 'd-m-Y') . " - " . $data;
+
+        }
+
+        return $newBatidas;
+    }
+
+    /**
+     * Verificar Batidas ('Falta','Folga','Feriado')
+     *
+     * @param Int $funcionarioId
      * @param Array $batidas
-     * @return Array $datas
+     * @param Array $periodo
+     * @return Array $newBatidas
      */
     public function checkBatidas($funcionarioId, $batidas, $periodo)
     {

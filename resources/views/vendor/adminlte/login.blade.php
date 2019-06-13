@@ -23,7 +23,7 @@
                     {!! csrf_field() !!}
                     <div class="form-group has-feedback {{ $errors->has('email') ? 'has-error' : '' }}">
                         <!--   type="email" -->
-                            <input type="text" name="usuario" class="form-control" value="{{ old('usuario') }}"
+                        <input type="text" name="usuario" class="form-control" value="{{ old('usuario') }}"
                             placeholder="Usuário">
                         @if ($errors->has('usuario'))
                             <span class="help-block">
