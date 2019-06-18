@@ -16,7 +16,7 @@
                 <th>Sai. 1</th>
                 <th>Ent. 2</th>
                 <th>Sai. 2</th>
-                <th>Extra</th>
+                <th>Carga</th>
                 <th>Débito</th>
                 <th>Crédito</th>
                 <th>Total</th>
@@ -34,7 +34,7 @@
                 <td>{{ $batida['saida1']}}</td>
                 <td>{{ $batida['entrada2']}}</td>
                 <td>{{ $batida['saida2']}}</td>
-                <td>{{ $batida['extra']}}</td>
+                <td>{{ $batida['carga']}}</td>
                 <td>{{ $batida['debito']}}</td>
                 <td>{{ $batida['credito']}}</td>
                 <td>{{ $batida['total']}}</td>

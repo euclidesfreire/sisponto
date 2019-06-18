@@ -91,13 +91,15 @@ trait BatidasTrait
 
         foreach($batidas as $batida)
         {
+            $this->calcular($batida);
+
             $newBatidas[] = [
                 'data' => $batida->data,
                 'entrada1' => $batida->entrada1,
                 'saida1' => $batida->saida1,
                 'entrada2' => $batida->entrada2,
                 'saida2' => $batida->saida2,
-                'extra' => 'extra',
+                'carga' => 'carga',
                 'debito'=> 'debito' ,
                 'credito'=> 'credito',
                 'total' => 'total',
@@ -107,6 +109,65 @@ trait BatidasTrait
     
         return $newBatidas;
 
+    }
+
+    /**
+    * Calcular Batidas (Carga, Debito, credito, total)
+    *
+    * @param Arrya $batida
+    * @return Array $calculos
+    */
+    public function calcular($batida)
+    {
+        $calculos = array(
+
+        );
+
+        $horarios = array();                
+
+        for($i=1;$i<=5;$i++){
+
+            $entrada = 'mem_entrada' . $i;
+            $saida = 'mem_saida' . $i;
+
+
+            $entrada = $batida->$entrada;
+            $saida = $batida->$saida;
+
+            if(is_null($entrada) || is_null($saida))
+                break;
+
+            $entrada = explode( ':', $entrada);
+            $saida   = explode( ':', $saida);
+            $minutos = ( $saida[0] - $entrada[0] ) * 60 + $saida[1] - $entrada[1];
+            if( $minutos < 0 ) $minutos += 24 * 60;
+            $carga = ($minutos / 60) . ':' . ($minutos % 60);
+
+            echo $carga;
+        }
+
+        $bool = TRUE;
+        
+        while ($bool) {
+            # code...
+        }
+
+        
+        
+    }
+
+    public function timeDiff($entrada, $saida = 0)
+    {
+        $entrada = explode( ':', $entrada);
+        $saida   = explode( ':', $saida);
+
+        $minutos = ( $saida[0] - $entrada[0] ) * 60 + $saida[1] - $entrada[1];
+
+        if( $minutos < 0 ) $minutos += 24 * 60;
+
+        $diff = ($minutos / 60) . ':' . ($minutos % 60);
+
+        return $diff;
     }
 
     /**
@@ -125,7 +186,7 @@ trait BatidasTrait
             'Wed' => 'Qua',
             'Thu' => 'Qui',
             'Fri' => 'Sex',
-            'Sat' => 'Sab',
+            'Sat' => 'Sáb',
             'Sun' => 'Dom', 
         );
 
@@ -200,7 +261,7 @@ trait BatidasTrait
                     'saida1' => $dayOff,
                     'entrada2' => $dayOff,
                     'saida2' => $dayOff,
-                    'extra' => 'extra',
+                    'carga' => 'carga',
                     'debito'=> 'debito',
                     'credito'=> 'credito',
                     'total' => 'total',
