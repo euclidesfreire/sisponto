@@ -91,7 +91,7 @@ trait BatidasTrait
 
         foreach($batidas as $batida)
         {
-            $this->calcular($batida);
+            $calculos = $this->calcular($batida);
 
             $newBatidas[] = [
                 'data' => $batida->data,
@@ -99,7 +99,7 @@ trait BatidasTrait
                 'saida1' => $batida->saida1,
                 'entrada2' => $batida->entrada2,
                 'saida2' => $batida->saida2,
-                'carga' => 'carga',
+                'carga' => $calculos['carga'],
                 'debito'=> 'debito' ,
                 'credito'=> 'credito',
                 'total' => 'total',
@@ -115,44 +115,66 @@ trait BatidasTrait
     * Calcular Batidas (Carga, Debito, credito, total)
     *
     * @param Arrya $batida
-    * @return Array $calculos
+    * @return Compact
     */
     public function calcular($batida)
     {
-        $calculos = array(
-
-        );
-
-        $horarios = array();                
+        $horarios = $debito = array();                
 
         for($i=1;$i<=5;$i++){
 
             $entrada = 'mem_entrada' . $i;
             $saida = 'mem_saida' . $i;
 
-
             $entrada = $batida->$entrada;
             $saida = $batida->$saida;
 
-            if(is_null($entrada) || is_null($saida))
-                break;
+            if(!(is_null($entrada)) || !(is_null($saida))){
+               $horarios[] = $this->timeDiff($entrada, $saida);
+            }
+        }
 
-            $entrada = explode( ':', $entrada);
-            $saida   = explode( ':', $saida);
-            $minutos = ( $saida[0] - $entrada[0] ) * 60 + $saida[1] - $entrada[1];
+        $carga = $horarios[0];
+
+        if(count($horarios) > 1){
+
+            $minutos = array(0 => 0, 1 => 0);
+
+            foreach ($horarios as $horario) {
+                $aux = explode(':', $horario);
+                $minutos[0] += $aux[0];
+                $minutos[1] += $aux[1];
+            }
+
+            $minutos = ($minutos[0] * 60) + $minutos[1];
+
             if( $minutos < 0 ) $minutos += 24 * 60;
+
             $carga = ($minutos / 60) . ':' . ($minutos % 60);
 
-            echo $carga;
         }
 
         $bool = TRUE;
         
-        while ($bool) {
-            # code...
+        // while ($bool) {
+        //     # code...
+        // }
+
+        for($i=1;$i<=5;$i++){
+
+            $entrada = 'entrada' . $i;
+            $saida = 'saida' . $i;
+
+            $entrada = $batida->$entrada;
+            $saida = $batida->$saida;
+
+            if(!(is_null($entrada)) || !(is_null($saida))){
+               $debito[] = $this->timeDiff($entrada, $saida);
+            }
         }
 
-        
+
+        return  compact('carga');
         
     }
 
@@ -161,11 +183,11 @@ trait BatidasTrait
         $entrada = explode( ':', $entrada);
         $saida   = explode( ':', $saida);
 
-        $minutos = ( $saida[0] - $entrada[0] ) * 60 + $saida[1] - $entrada[1];
+        $minutos = (($saida[0] - $entrada[0]) * 60) + ($saida[1] - $entrada[1]);
 
-        if( $minutos < 0 ) $minutos += 24 * 60;
+        if( $minutos < 0 ) $minutos += (24 * 60);
 
-        $diff = ($minutos / 60) . ':' . ($minutos % 60);
+        $diff = ((int)($minutos / 60)) . ':' . ($minutos % 60);
 
         return $diff;
     }
