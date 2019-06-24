@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
+use DateTime;
 
 trait BatidasTrait 
 {
@@ -100,8 +101,8 @@ trait BatidasTrait
                 'entrada2' => $batida->entrada2,
                 'saida2' => $batida->saida2,
                 'carga' => $calculos['carga'],
-                'debito'=> 'debito' ,
-                'credito'=> 'credito',
+                'debito'=>  $calculos['debito'] ,
+                'credito'=>  $calculos['credito'],
                 'total' => 'total',
             ];
             
@@ -119,22 +120,31 @@ trait BatidasTrait
     */
     public function calcular($batida)
     {
-        $horarios = $debito = array();                
+        $horarios = array();
+        $horariosBatidas = array();                    
 
         for($i=1;$i<=5;$i++){
 
-            $entrada = 'mem_entrada' . $i;
-            $saida = 'mem_saida' . $i;
+            $entrada = 'entrada' . $i;
+            $saida = 'saida' . $i;
+            $men_entrada = 'mem_entrada' . $i;
+            $men_saida = 'mem_saida' . $i;
 
             $entrada = $batida->$entrada;
             $saida = $batida->$saida;
+            $men_entrada = $batida->$men_entrada;
+            $men_saida = $batida->$men_saida;
 
-            if(!(is_null($entrada)) || !(is_null($saida))){
-               $horarios[] = $this->timeDiff($entrada, $saida);
+            if(!(is_null($entrada)) && !(is_null($saida)) && ($entrada !== "VIAGEM")){
+               $horariosBatidas[] = $this->timeDiff($entrada, $saida);
+            }
+
+            if(!(is_null($men_entrada)) && !(is_null($men_saida))){
+               $horarios[] = $this->timeDiff($men_entrada, $men_saida);
             }
         }
 
-        $carga = $horarios[0];
+        $carga = (isset($horarios[0])) ? $horarios[0] : NULL;
 
         if(count($horarios) > 1){
 
@@ -148,49 +158,56 @@ trait BatidasTrait
 
             $minutos = ($minutos[0] * 60) + $minutos[1];
 
-            if( $minutos < 0 ) $minutos += 24 * 60;
-
-            $carga = ($minutos / 60) . ':' . ($minutos % 60);
+            $carga = ((int)($minutos / 60)) . ':' . ((int)($minutos % 60));
 
         }
 
-        $bool = TRUE;
-        
-        // while ($bool) {
-        //     # code...
-        // }
 
-        for($i=1;$i<=5;$i++){
+        $cargaBatidas = (isset($horariosBatidas[0])) ? $horariosBatidas[0] : NULL;
 
-            $entrada = 'entrada' . $i;
-            $saida = 'saida' . $i;
+        if(count($horariosBatidas) > 1){
 
-            $entrada = $batida->$entrada;
-            $saida = $batida->$saida;
+            $minutos = array(0 => 0, 1 => 0);
 
-            if(!(is_null($entrada)) || !(is_null($saida))){
-               $debito[] = $this->timeDiff($entrada, $saida);
+            foreach ($horariosBatidas as $horario) {
+                $aux = explode(':', $horario);
+                $minutos[0] += $aux[0];
+                $minutos[1] += $aux[1];
             }
+
+            $minutos = ($minutos[0] * 60) + $minutos[1];
+
+            $cargaBatidas = ((int)($minutos / 60)) . ':' . ((int)($minutos % 60));
+
         }
 
+        $credito = $debito = NULL;
 
-        return  compact('carga');
+        if($cargaBatidas){
+
+            $aux  = $this->timeDiff($carga, $cargaBatidas);
+
+            if($cargaBatidas > $carga)
+                $credito = $aux;
+            else 
+                $debito = $aux;
+
+        }
+
+        return  compact('carga', 'credito', 'debito');
         
     }
 
-    public function timeDiff($entrada, $saida = 0)
+    public function timeDiff($entrada, $saida)
     {
-        $entrada = explode( ':', $entrada);
-        $saida   = explode( ':', $saida);
-
-        $minutos = (($saida[0] - $entrada[0]) * 60) + ($saida[1] - $entrada[1]);
-
-        if( $minutos < 0 ) $minutos += (24 * 60);
-
-        $diff = ((int)($minutos / 60)) . ':' . ($minutos % 60);
+        $entrada = new DateTime($entrada);
+        $saida   = new DateTime($saida);
+        $diff = $entrada->diff($saida, true);
+        $diff  = $diff->format('%H:%I');
 
         return $diff;
     }
+
 
     /**
      * Formatar Datas de Batidas 'd-m-Y - Dia da Semana'
