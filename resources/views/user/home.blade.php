@@ -7,5 +7,5 @@
 
 @section('content')
      @include('user.includes.formulario')
-     @include('geral.batidas.table', [ 'batidas' => $registros['batidas']])
+     @include('geral.batidas.table', [ 'batidas' => $registros['batidas'], 'total' => $registros['total']])
 @stop

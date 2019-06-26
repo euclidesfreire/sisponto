@@ -7,12 +7,21 @@
                 <th>Ent. 2</th>
                 <th>Sai. 2</th>
                 <th>Carga</th>
-                <th>Debito</th>
-                <th>Credito</th>
-                <th>Total</th>
+                <th>Débito</th>
+                <th>Crédito</th>
             </tr>
         </thead>
         <tbody>
+             <tr class="">
+                    <td>TOTAIS</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>{{$total['debito']}}</td>
+                    <td>{{$total['credito']}}</td>
+            </tr>
             @foreach ($batidas as $batida)
             <tr class="@if($batida['entrada1'] === 'Folga' || $batida['entrada1'] === 'Feriado')
                         {{'warning'}}
@@ -27,7 +36,6 @@
                     <td>{{ $batida['carga'] }}</td>
                     <td>{{ $batida['debito'] }}</td>
                     <td>{{ $batida['credito'] }}</td>
-                    <td>{{ $batida['total'] }}</td>
             </tr>
             @endforeach
         </tbody>
