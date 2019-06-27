@@ -124,7 +124,8 @@ trait BatidasTrait
     public function calcular($batida)
     {
         $horarios = array();
-        $horariosBatidas = array();                 
+        $horariosBatidas = array(); 
+        $bool = FALSE; //Caso Batidas não seja do formato de hora                
 
         for($i=1;$i<=5;$i++){
 
@@ -145,8 +146,10 @@ trait BatidasTrait
             )
             {
                 $horariosBatidas[] = $this->timeDiff($entrada, $saida);
-            } 
-
+            } else if(!(preg_match('/\d{2}:\d{2}/',$entrada))) {
+                $bool = TRUE;
+            }
+            
 
             if(!(is_null($men_entrada)) && !(is_null($men_saida))){
                $horarios[] = $this->timeDiff($men_entrada, $men_saida);
@@ -217,7 +220,7 @@ trait BatidasTrait
             else 
                 $debito = $aux;
 
-        } else {
+        } else if(!$bool) {
             $debito = $carga;
         }
 

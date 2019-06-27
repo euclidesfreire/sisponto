@@ -13,7 +13,7 @@
         </thead>
         <tbody>
              <tr class="">
-                    <td>TOTAIS</td>
+                    <td scope="row">TOTAIS</td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -39,4 +39,4 @@
             </tr>
             @endforeach
         </tbody>
-    </table>
+</table>
