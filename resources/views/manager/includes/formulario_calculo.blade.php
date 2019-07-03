@@ -1,5 +1,5 @@
 <div class="row">
-    <form class="form" method="POST" action="{{ route('manager.batidas.read')}}">
+    <form class="form" method="POST" action="{{route('manager.batidas')}}">
         {!! csrf_field() !!}
         
         <div class="form-group col-md-5">

@@ -1,6 +1,6 @@
 <div class="row">
-    <form class="form" method="POST" action="{{ route('user.batidas.read')}}">
-        {!! csrf_field() !!}
+    <form class="form" method="POST" action="{{ route('user.batidas')}}">
+         {!! csrf_field() !!}
         
         <div class="form-group col-md-5">
             <label>Servidor: </label>

@@ -33,9 +33,11 @@ class BatidasController extends Controller
         $this->feriadosRepository = $feriados;
     }
 
-	public function getRead()
+	public function getIndex()
     {
-        $registros = $this->getCalculo();
+        $funcionarioId = Auth::user()->id;
+
+        $registros = $this->getCalculo($funcionarioId);
 
         $funcionarios = $this->getFuncionarios(); 
  
@@ -44,13 +46,23 @@ class BatidasController extends Controller
 
     public function postRead(Request $request)
     {
-        $registros = $this->postCalculo($request);
+        $dataFuncionario = array(
+            'matriculas' => $request->input('matricula'),
+            'periodos' => $request->input('periodo'),
+        );
+
+        $registros = $this->postCalculo($dataFuncionario['matriculas'], $dataFuncionario['periodos']);
 
         $funcionarios = $this->getFuncionarios(); 
  
         return view('manager.home', ['registros' => $registros, 'funcionarios' => $funcionarios]);
     }
 
+    /**
+    * Read Funcionarios do departamendo do Manager
+    *
+    * @return Array $funcionarios 
+    */
     public function getFuncionarios()
     {
         $departamentoId = Auth::user()->estrutura_id;
