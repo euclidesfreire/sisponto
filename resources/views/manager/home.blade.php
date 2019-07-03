@@ -6,6 +6,6 @@
 @stop
 
 @section('content')
-    @include('manager.includes.formulario_calculo')
+    @include('manager.includes.formulario_calculo',  [ 'registros' => $registros])
     @include('geral.batidas.table', [ 'batidas' => $registros['batidas'], 'total' => $registros['total']])
 @stop

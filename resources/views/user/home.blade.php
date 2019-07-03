@@ -6,6 +6,6 @@
 @stop
 
 @section('content')
-     @include('user.includes.formulario')
+     @include('user.includes.formulario',  [ 'registros' => $registros])
      @include('geral.batidas.table', [ 'batidas' => $registros['batidas'], 'total' => $registros['total']])
 @stop

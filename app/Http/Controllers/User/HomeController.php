@@ -15,7 +15,7 @@ class HomeController extends Controller
      */
      public function index()
     {
-        return redirect()->route('user.batidas.read');
+        return redirect()->route('user.batidas');
     }
 
 }

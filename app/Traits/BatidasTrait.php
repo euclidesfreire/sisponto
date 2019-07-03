@@ -3,7 +3,6 @@
 namespace App\Traits;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use DateTime;
@@ -28,11 +27,10 @@ trait BatidasTrait
     /**
     * Get Index  
     *
-    * @return Array Compat ('batidas','periodoString')
+    * @return Array Compact ('batidas','periodoString')
     */
-    public function getCalculo()
+    public function getCalculo($funcionarioId)
     {
-        $funcionarioId = Auth::user()->id;
 
         $periodoString = Carbon::now()->startOfMonth()->format('d/m/Y') . ' - ' . Carbon::now()->format('d/m/Y');      
 
@@ -57,18 +55,16 @@ trait BatidasTrait
     *
     * @return Array $registros
     */
-    public function postCalculo(Request $request)
+    public function postCalculo($matricula, $periodo)
     {
-        $input = array(
-            'matricula' => $request->input('matricula'),
-            'periodo' => $request->input('periodo'),
-        );
 
-        $funcionario = $this->userRepository->getUser($input['matricula']);
+        $funcionario = $this->userRepository->getUser($matricula);
 
         $funcionarioId = $funcionario->id;
 
-        $periodo = $this->explodeDatas($input['periodo']);
+        $periodoString = $periodo;
+
+        $periodo = $this->explodeDatas($periodo);
 
         $batidas = $this->getBatidas($funcionarioId, $periodo);
 
@@ -77,8 +73,6 @@ trait BatidasTrait
         $batidas = $this->checkBatidas($funcionarioId, $batidas, $periodo);
 
         $batidas = $this->formatTime($batidas);
-
-        $periodoString = $input['periodo'];
 
         $total = $this->calcularTotal($batidas);
 
@@ -127,29 +121,29 @@ trait BatidasTrait
         $horariosBatidas = array(); 
         $bool = FALSE; //Caso Batidas não seja do formato de hora                
 
-        for($i=1;$i<=5;$i++){
+        for($i=1;$i<=5;$i++)
+        {
 
             $entrada = 'entrada' . $i;
             $saida = 'saida' . $i;
             $men_entrada = 'mem_entrada' . $i;
             $men_saida = 'mem_saida' . $i;
 
+            $teste = $entrada;
+
             $entrada = $batida->$entrada;
             $saida = $batida->$saida;
             $men_entrada = $batida->$men_entrada;
             $men_saida = $batida->$men_saida;
 
-    
-            if(!(is_null($entrada)) &&
-             !(is_null($saida)) &&
-              (preg_match('/\d{2}:\d{2}/',$entrada))
-            )
+            if(preg_match('/\d{2}:\d{2}/',$entrada) && preg_match('/\d{2}:\d{2}/',$saida))
             {
                 $horariosBatidas[] = $this->timeDiff($entrada, $saida);
-            } else if(!(preg_match('/\d{2}:\d{2}/',$entrada))) {
+            } 
+            else if (($teste == "entrada1") && (is_null($entrada) || is_null($saida))) 
+            {
                 $bool = TRUE;
             }
-            
 
             if(!(is_null($men_entrada)) && !(is_null($men_saida))){
                $horarios[] = $this->timeDiff($men_entrada, $men_saida);
@@ -158,7 +152,8 @@ trait BatidasTrait
 
         $carga = (isset($horarios[0])) ? $horarios[0] : NULL;
 
-        if(count($horarios) > 1){
+        if(!(is_null($carga)) && count($horarios) > 1)
+        {
 
             $minutos = array(0 => 0, 1 => 0);
 
@@ -183,9 +178,9 @@ trait BatidasTrait
         }
 
 
-        $cargaBatidas = (isset($horariosBatidas[0])) ? $horariosBatidas[0] : FALSE;
+        $cargaBatidas = (isset($horariosBatidas[0])) ? $horariosBatidas[0] : NULL;
 
-        if(count($horariosBatidas) > 1){
+        if(!(is_null($cargaBatidas)) && count($horariosBatidas) > 1){
 
             $minutos = array(0 => 0, 1 => 0);
 
@@ -211,7 +206,7 @@ trait BatidasTrait
 
         $credito = $debito = NULL;
 
-        if($cargaBatidas){
+        if(!is_null($cargaBatidas)){
 
             $aux  = $this->timeDiff($carga, $cargaBatidas);
 
@@ -220,7 +215,7 @@ trait BatidasTrait
             else 
                 $debito = $aux;
 
-        } else if(!$bool) {
+        } else if($bool) {
             $debito = $carga;
         }
 

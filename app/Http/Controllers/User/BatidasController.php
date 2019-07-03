@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Repositories\UserRepository;
 use App\Repositories\BatidaRepository;
 use App\Repositories\HorariosRepository; 
@@ -32,16 +33,23 @@ class BatidasController extends Controller
         $this->feriadosRepository = $feriados;
     }
 
-	public function getRead()
+	public function getIndex()
     {
-        $registros = $this->getCalculo();
+        $funcionarioId = Auth::user()->id;
+        
+        $registros = $this->getCalculo($funcionarioId);
  
         return view('user.home', ['registros' => $registros]);
     }
 
     public function postRead(Request $request)
     {
-        $registros = $this->postCalculo($request);
+        $dataFuncionario = array(
+            'matricula' => $request->input('matricula'),
+            'periodo' => $request->input('periodo'),
+        );
+
+        $registros = $this->postCalculo($dataFuncionario['matricula'], $dataFuncionario['periodo']);
  
         return view('user.home', ['registros' => $registros]);
     }
