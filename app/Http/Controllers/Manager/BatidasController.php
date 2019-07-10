@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Manager;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Core\Facades\User;
 use App\Repositories\UserRepository;
 use App\Repositories\BatidaRepository;
 use App\Repositories\HorariosRepository; 
@@ -37,6 +38,8 @@ class BatidasController extends Controller
     {
         $funcionarioId = Auth::user()->id;
 
+        User::getUser();
+
         $registros = $this->getCalculo($funcionarioId);
 
         $funcionarios = $this->getFuncionarios(); 
@@ -47,14 +50,18 @@ class BatidasController extends Controller
     public function postRead(Request $request)
     {
         $dataFuncionario = array(
-            'matriculas' => $request->input('matricula'),
+            'matricula' => $request->input('matricula'),
             'periodos' => $request->input('periodo'),
         );
 
-        $registros = $this->postCalculo($dataFuncionario['matriculas'], $dataFuncionario['periodos']);
+        $funcionario = $this->userRepository->getUser($dataFuncionario['matricula']);
+
+        $funcionarioId = $funcionario->id;
+
+        $registros = $this->postCalculo($funcionarioId, $dataFuncionario['periodos']);
 
         $funcionarios = $this->getFuncionarios(); 
- 
+
         return view('manager.home', ['registros' => $registros, 'funcionarios' => $funcionarios]);
     }
 

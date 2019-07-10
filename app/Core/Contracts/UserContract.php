@@ -5,13 +5,6 @@ namespace App\Core\Contracts;
 interface UserContract {
 
 	/**
-     * The currently authenticated user.
-     *
-     * @var Array
-     */
-    protected $user;
-
-	/**
 	*Get the current authenticade user
 	*
 	* @return $user

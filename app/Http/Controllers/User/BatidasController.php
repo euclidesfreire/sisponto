@@ -49,7 +49,9 @@ class BatidasController extends Controller
             'periodo' => $request->input('periodo'),
         );
 
-        $registros = $this->postCalculo($dataFuncionario['matricula'], $dataFuncionario['periodo']);
+        $funcionarioId = Auth::user()->id;
+
+        $registros = $this->postCalculo($funcionarioId, $dataFuncionario['periodo']);
  
         return view('user.home', ['registros' => $registros]);
     }

@@ -3,9 +3,9 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use App\Core\Services\Batidas\BatidasService;
+use App\Core\Services\UserService;
 
-class BatidasServiceProvider extends ServiceProvider
+class UserServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap the application services.
@@ -24,9 +24,6 @@ class BatidasServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton(
-            'BatidasContract', 
-            function() { return new BatidasService; }
-        );
+        $this->app->bind('UserContract', 'App\Core\Services\UserService');
     }
 }

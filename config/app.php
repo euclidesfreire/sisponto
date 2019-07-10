@@ -177,7 +177,9 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
-        App\Providers\BatidasServiceProvider::class,
+        //Services Providers Application 
+
+        App\Providers\UserServiceProvider::class,
 
     ],
 
@@ -228,7 +230,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
-        'Batida' => App\Core\Facades\BatidasFacades::class,
+        'User' => App\Core\Facades\User::class,
 
     ],
 
