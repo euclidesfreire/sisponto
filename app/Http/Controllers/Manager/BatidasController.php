@@ -10,7 +10,7 @@ use App\Repositories\UserRepository;
 use App\Repositories\BatidaRepository;
 use App\Repositories\HorariosRepository; 
 use App\Repositories\FeriadosRepository;
-use App\Traits\BatidasTrait;
+use App\Core\Traits\BatidasTrait;
 
 class BatidasController extends Controller
 {
