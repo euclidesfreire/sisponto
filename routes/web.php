@@ -11,6 +11,37 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+
+Route::get('/', 'Auth\LoginController@showLoginForm')->name('auth.login');
+Route::post('/', 'Auth\LoginController@authenticate')->name('auth.login');
+Route::post('logout', 'Auth\LoginController@logout')->name('auth.logout');
+
+Route::group(['prefix' => 'admin', 'middleware' => ['auth:admin']], function () {
+	Route::get('/', 'Admin\HomeController@index')->name('admin.home');
+
+	Route::get('login', 'Admin\Auth\LoginController@showLoginForm')->name('admin.login');
+	Route::post('login', 'Admin\Auth\LoginController@authenticate')->name('admin.login');
+	Route::post('logout', 'Admin\Auth\LoginController@logout')->name('admin.logout');
+});
+
+Route::group(['prefix' => 'manager', 'middleware' => ['auth:manager']], function () {
+	Route::get('/', 'Manager\HomeController@index')->name('manager.home');
+
+	Route::group(['prefix' => 'batidas'], function () {
+		Route::get('/', 'Manager\BatidasController@getIndex')->name('manager.batidas');
+		Route::post('/', 'Manager\BatidasController@postRead')->name('manager.batidas');
+		Route::post('/edit', 'Manager\HomeController@edit')->name('manager.batidas.edit');
+		Route::get('/edit', 'Manager\HomeController@edit')->name('manager.batidas.edit');
+	});
+});
+
+Route::group(['prefix' => 'user', 'middleware' => ['auth:user']], function () {
+	Route::get('/', 'User\HomeController@index')->name('user.home');
+	
+	Route::group(['prefix' => 'batidas'], function () {
+		Route::get('/', 'User\BatidasController@getIndex')->name('user.batidas');
+		Route::post('/', 'User\BatidasController@postRead')->name('user.batidas');
+		Route::post('/edit', 'User\HomeController@edit')->name('user.batidas.edit');
+		Route::get('/edit', 'User\HomeController@edit')->name('user.batidas.edit');
+	});
 });
