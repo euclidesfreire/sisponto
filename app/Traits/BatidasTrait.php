@@ -14,6 +14,7 @@ trait BatidasTrait
     *
     * @param Integer $funcionarioId
     * @param Array Time $periodo 
+    *
     * @return Array $batidas
     */
 	public function getBatidas($funcionarioId, $periodo)
@@ -26,6 +27,8 @@ trait BatidasTrait
 
     /**
     * Get Index  
+    *
+    * @param Integer $funcionarioId
     *
     * @return Array Compact ('batidas','periodoString')
     */
@@ -53,14 +56,13 @@ trait BatidasTrait
     /**
     * Post Atualizar Calculo  
     *
-    * @return Array $registros
+    * @param Integer $funcionarioId
+    * @param Integer $periodo
+    *
+    * @return Array Compact ('batidas', 'periodoString', 'total')
     */
-    public function postCalculo($matricula, $periodo)
+    public function postCalculo($funcionarioId, $periodo)
     {
-
-        $funcionario = $this->userRepository->getUser($matricula);
-
-        $funcionarioId = $funcionario->id;
 
         $periodoString = $periodo;
 
@@ -129,7 +131,7 @@ trait BatidasTrait
             $men_entrada = 'mem_entrada' . $i;
             $men_saida = 'mem_saida' . $i;
 
-            $teste = $entrada;
+            $verificar = $entrada;
 
             $entrada = $batida->$entrada;
             $saida = $batida->$saida;
@@ -140,7 +142,7 @@ trait BatidasTrait
             {
                 $horariosBatidas[] = $this->timeDiff($entrada, $saida);
             } 
-            else if (($teste == "entrada1") && (is_null($entrada) || is_null($saida))) 
+            else if (($verificar == "entrada1") && (is_null($entrada) || is_null($saida))) 
             {
                 $bool = TRUE;
             }

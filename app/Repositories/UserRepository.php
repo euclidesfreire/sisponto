@@ -19,6 +19,13 @@ class UserRepository extends BaseRepository
     	return $this->model->where('n_folha', $matricula)->first();
     }
 
+     /**
+    * Verificar dados do Login
+    *
+    * @param $credentials 
+    *
+    * @return $user
+    */
     public function attemp($credentials)
     {
     	$user = $this->model->where('n_folha', $credentials['usuario'])
@@ -35,13 +42,16 @@ class UserRepository extends BaseRepository
         return $userHorario;
     }
 
-
+    /**
+    * Selecionar Todos os Funcionarios
+    * Do Departamento do Manager
+    *
+    * @param $departamentoId 
+    *
+    * @return $funcionario
+    */
     public function getFuncionarios($departamentoId)
     {
-        /**
-        * Selecionar Todos os Funcionarios
-        * Do Departamento do Manager
-        */
         $funcionarios = $this->model->where('estrutura_id', $departamentoId)->get();
         
         return $funcionarios;
