@@ -36,8 +36,10 @@ class BatidasController extends Controller
 	public function getIndex()
     {
         $funcionarioId = Auth::user()->id;
+
+        $departamento = Auth::user()->departamento_id;
         
-        $registros = $this->getCalculo($funcionarioId);
+        $registros = $this->getCalculo($funcionarioId, $departamento);
  
         return view('user.home', ['registros' => $registros]);
     }
@@ -51,7 +53,9 @@ class BatidasController extends Controller
 
         $funcionarioId = Auth::user()->id;
 
-        $registros = $this->postCalculo($funcionarioId, $dataFuncionario['periodo']);
+         $departamento = Auth::user()->departamento_id;
+
+        $registros = $this->postCalculo($funcionarioId, $departamento, $dataFuncionario['periodo']);
  
         return view('user.home', ['registros' => $registros]);
     }

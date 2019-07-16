@@ -38,9 +38,9 @@ class BatidasController extends Controller
     {
         $funcionarioId = Auth::user()->id;
 
-        User::getUser();
+        $departamento = Auth::user()->departamento_id;
 
-        $registros = $this->getCalculo($funcionarioId);
+        $registros = $this->getCalculo($funcionarioId, $departamento);
 
         $funcionarios = $this->getFuncionarios(); 
  
@@ -58,7 +58,9 @@ class BatidasController extends Controller
 
         $funcionarioId = $funcionario->id;
 
-        $registros = $this->postCalculo($funcionarioId, $dataFuncionario['periodos']);
+        $departamento = Auth::user()->departamento_id;
+
+        $registros = $this->postCalculo($funcionarioId, $departamento, $dataFuncionario['periodos']);
 
         $funcionarios = $this->getFuncionarios(); 
 

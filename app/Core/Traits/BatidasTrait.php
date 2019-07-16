@@ -32,7 +32,7 @@ trait BatidasTrait
     *
     * @return Array Compact ('batidas','periodoString')
     */
-    public function getCalculo($funcionarioId)
+    public function getCalculo($funcionarioId,  $departamento)
     {
 
         $periodoString = Carbon::now()->startOfMonth()->format('d/m/Y') . ' - ' . Carbon::now()->format('d/m/Y');      
@@ -43,7 +43,7 @@ trait BatidasTrait
 
         $batidas = $this->filterBatidas($batidas);
 
-        $batidas = $this->checkBatidas($funcionarioId, $batidas, $periodo);
+        $batidas = $this->checkBatidas($funcionarioId, $departamento, $batidas, $periodo);
 
         $batidas = $this->formatTime($batidas);
 
@@ -61,7 +61,7 @@ trait BatidasTrait
     *
     * @return Array Compact ('batidas', 'periodoString', 'total')
     */
-    public function postCalculo($funcionarioId, $periodo)
+    public function postCalculo($funcionarioId,  $departamento, $periodo)
     {
 
         $periodoString = $periodo;
@@ -72,7 +72,7 @@ trait BatidasTrait
 
         $batidas = $this->filterBatidas($batidas);
 
-        $batidas = $this->checkBatidas($funcionarioId, $batidas, $periodo);
+        $batidas = $this->checkBatidas($funcionarioId, $departamento, $batidas, $periodo);
 
         $batidas = $this->formatTime($batidas);
 
@@ -315,7 +315,7 @@ trait BatidasTrait
      * @param Array $periodo
      * @return Array $newBatidas
      */
-    public function checkBatidas($funcionarioId, $batidas, $periodo)
+    public function checkBatidas($funcionarioId, $departamento, $batidas, $periodo)
     {
         $newBatidas = array();
         $BatidasCombine = array_combine(array_column($batidas, 'data'),$batidas);
@@ -355,7 +355,10 @@ trait BatidasTrait
 
                 $folga = $this->horariosRepository->getFolga($funcionario);
 
-                $feriado = $this->feriadosRepository->getFeriado(date_format($dataString, 'Y/d/m'));
+                $feriado = $this->feriadosRepository->getFeriado(
+                    date_format($dataString, 'Y/d/m'),
+                    $departamento
+                );
 
                 if($folga[0]->folga){
                     $dayOff = "Folga";
@@ -384,6 +387,8 @@ trait BatidasTrait
             }
 
         }
+
+        //die();
 
         return $newBatidas;
 
