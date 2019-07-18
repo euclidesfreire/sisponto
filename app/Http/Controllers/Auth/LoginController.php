@@ -6,8 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Auth\AuthRoleController as Role;
-use App\Repositories\UserRepository;
+use App\Core\Facades\User;
 
 class LoginController extends Controller
 {
@@ -24,18 +23,11 @@ class LoginController extends Controller
 
     use AuthenticatesUsers;
 
-    protected $userRepository;
-    protected $role;
-
-    public function __construct(UserRepository $user, Role $role)
-    {
-        $this->userRepository = $user;
-        $this->role = $role;
-    }
 
     public function showLoginForm()
     {
         $guard = $this->getGuard();
+
         
         if(!$guard)
             return view('auth.login');
@@ -48,28 +40,17 @@ class LoginController extends Controller
 
         $credentials = $request->only('usuario', 'password');
 
-        /**
-        * Sobrescrevendo o method attemp, pois o database não
-        * usa o mesmo method de criptografia que o laravel
-        */
-        $user = $this->userRepository->attemp($credentials);
+        $user = User::attemp($credentials); 
 
         if ($user) {
 
-            $role = $this->role->role($user); //Define Auth('guard')
+            $role = User::role($user); //Define Auth('guard')
+           
+            Auth::guard($role)->login($user);
 
-            if($role)
-                Auth::guard('manager')->login($user);
-            else 
-                Auth::guard('user')->login($user);
-
-           /**
-           * PROVISÓRIO 
-           * Check Route do Guard Autenticado 
-           */
-           $guard = $this->getGuard();
+            $guard = $this->getGuard();
                  
-           return redirect()->intended($guard);
+            return redirect()->intended($guard);
         }
 
         return redirect()->route('login');
