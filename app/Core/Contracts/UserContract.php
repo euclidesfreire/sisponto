@@ -12,6 +12,20 @@ interface UserContract {
 	public function getUser();
 
 	/**
+	*Loggin
+	*
+	* @return $user
+	*/  
+	public function attemp($credentials);
+
+	/**
+	* Role Auth Guard
+	*
+	* @return $guard
+	*/  
+	public function role($user);
+
+	/**
 	* Check if the authenticated user has the given permission.
 	 *
      * @param string $rota

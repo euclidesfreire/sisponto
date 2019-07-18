@@ -13,9 +13,12 @@ class FeriadosRepository extends BaseRepository
        $this->model = $feriados;
     }
 
-    public function getFeriado($data) 
+    public function getFeriado($data, $departamento) 
     {
-    	$feriado = $this->model->where('data', $data)->count();
+    	$feriado = $this->model->where('data', $data)
+    	->join('feriados_departamentos', 'feriados_departamentos.feriado_id', '=', 'feriados.id')
+    	->where('feriados_departamentos.departamento_id', $departamento)
+    	->count();
         
     	return $feriado;
     }
